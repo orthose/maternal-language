@@ -1,5 +1,7 @@
 import pandas as pd
 import numpy as np
+from sklearn.pipeline import Pipeline, make_pipeline
+from sklearn.metrics import f1_score
 from typing import List, Tuple
 
 
@@ -56,4 +58,46 @@ def evaluate(y_true: np.array, y_pred: np.array):
     sns.heatmap(matrix, annot=True, fmt='.3g', xticklabels=labels, yticklabels=labels)
     plt.yticks(rotation=0)
     plt.show()
-
+    
+class PipelineEvaluator:
+    """
+    Classe permettant d'évaluer des pipelines pour trouver la meilleure
+    """
+    def __init__(self, X_train, y_train, X_valid, y_valid):
+        """
+        :param X_train: ensemble d'entraînement
+        :param y_train: étiquettes associées
+        """
+        self.X_train = X_train
+        self.y_train = y_train
+        self.X_valid = X_valid
+        self.y_valid = y_valid
+        self.pipelines = [(Pipeline(steps=[]), 0.)]
+        
+    def evaluate(self, pipe: Pipeline) -> float:
+        """
+        Évalue une pipeline sur l'ensemble d'entraînement 
+        et renvoie le f1-score associé sur l'ensemble de validation
+        
+        :param pipe: pipeline à évaluer
+        :return: f1-score sur l'ensemble de validation
+        """
+        pipe.fit(self.X_train, self.y_train)
+        y_pred = pipe.predict(self.X_valid)
+        score = f1_score(self.y_valid, y_pred, average="macro")
+        best = max(self.pipelines, key=lambda x: x[1])[1]
+        self.pipelines.append((pipe, score))
+        
+        # Est-ce la meilleure pipeline ?
+        if score >= best:
+            print("!!! BEST !!!")
+        
+        return score
+    
+    def best(self) -> Tuple[Pipeline, float]:
+        """
+        Trouve la meilleure pipeline avec le score le plus élevé
+        
+        :return: pipeline, score
+        """
+        return max(self.pipelines, key=lambda x: x[1])
