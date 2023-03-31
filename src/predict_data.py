@@ -14,7 +14,7 @@ import estimators as est
 ### Entraînement ###
 ####################
 
-df = load_data("./data/train.txt")
+df = load_data("../data/train.txt")
 X, y = df["text"], df["language"]
 
 pipe = make_pipeline(
@@ -31,7 +31,7 @@ pipe.fit(X, y)
 ### Prédiction ###
 ##################
 
-with open("./data/data.txt", 'r') as f:
+with open("../data/data.txt", 'r') as f:
     data = f.read()[:-1]
     
 data = data.split('\n')
@@ -49,5 +49,5 @@ for i in range(len(data)):
     
 data = '\n'.join(data)
 
-with open("./data/output.txt", 'w') as f:
+with open("../data/output.txt", 'w') as f:
     f.write(data)

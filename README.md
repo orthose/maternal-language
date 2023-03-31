@@ -14,5 +14,6 @@ jupyter notebook
 Pour lancer le script chargé de faire les prédictions sur le dataset de test.
 ```shell
 source venv/bin/activate
+cd src/
 python predict_data.py
 ```
