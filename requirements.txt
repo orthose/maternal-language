@@ -1,7 +1,10 @@
 notebook
 pandas
 numpy
+scipy
 scikit-learn
+gensim
+nltk
 matplotlib
 seaborn
 

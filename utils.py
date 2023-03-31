@@ -1,7 +1,9 @@
 import pandas as pd
 import numpy as np
 from sklearn.pipeline import Pipeline, make_pipeline
-from sklearn.metrics import f1_score
+from sklearn.metrics import accuracy_score, f1_score, confusion_matrix
+import matplotlib.pyplot as plt
+from seaborn import heatmap
 from typing import List, Tuple
 
 
@@ -43,19 +45,21 @@ def train_valid_test_split(df: pd.DataFrame, size: Tuple[int] = (600, 200, 100)
     
     return df_train, df_valid, df_test
 
-def evaluate(y_true: np.array, y_pred: np.array):
+def evaluate(y_true: np.array, y_pred: np.array, labels: List[str] = None):
     """
     Évalue les prédictions du modèle en affichant:
     accuracy, f1-score, matrice de confusion
     
     :param y_true: étiquettes réelles 
     :param y_pred: étiquettes prédites
+    :param labels: Étiquettes à afficher dans la matrice de confusion
     """
     print(f"accuracy: {accuracy_score(y_true, y_pred)}")
     print(f"f1-score: {f1_score(y_true, y_pred, average='macro')}")
-    labels = ['TEL', 'HIN', 'CHI', 'KOR', 'JPN', 'FRE', 'SPA', 'ITA', 'TUR', 'ARA', 'GER']
-    matrix = metrics.confusion_matrix(y_true, y_pred, labels=labels)
-    sns.heatmap(matrix, annot=True, fmt='.3g', xticklabels=labels, yticklabels=labels)
+    if labels is None:
+        labels = ['TEL', 'HIN', 'CHI', 'KOR', 'JPN', 'FRE', 'SPA', 'ITA', 'TUR', 'ARA', 'GER']
+    matrix = confusion_matrix(y_true, y_pred, labels=labels)
+    heatmap(matrix, annot=True, fmt='.3g', xticklabels=labels, yticklabels=labels)
     plt.yticks(rotation=0)
     plt.show()
     
